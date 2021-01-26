@@ -21,6 +21,10 @@ Customize all parameters according your needs. You can use also these environmen
 
 The code supports loading those variables from a `.env` file.
 
+# Issues / contributions
+
+Please refer to the main repo on GitLab: https://gitlab.com/Enrico204/dd-wrt-prometheus-exporter/
+
 # License
 
 See `LICENSE` file.
