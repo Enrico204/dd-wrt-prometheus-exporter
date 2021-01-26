@@ -1,0 +1,16 @@
+[Unit]
+Description=DD-WRT exporter service example
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/dd-wrt-exporter
+Restart=on-failure
+User=nobody
+WorkingDirectory=/tmp
+Environment=DDWRT_URL=http://192.168.0.1
+Environment=DDWRT_USER=admin
+Environment=DDWRT_PASS=admin
+Environment=DDWRT_INTERFACES=eth0,eth1,br0,vlan0
+
+[Install]
+WantedBy=multi-user.target
