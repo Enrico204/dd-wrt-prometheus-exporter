@@ -24,19 +24,19 @@ func main() {
 
 	flag.Parse()
 
-	if os.Getenv("DDWRT_LISTEN") != "" {
+	if *listenSocket == ":2112" && os.Getenv("DDWRT_LISTEN") != "" {
 		*listenSocket = os.Getenv("DDWRT_LISTEN")
 	}
-	if os.Getenv("DDWRT_URL") != "" {
+	if *routerURL == "" {
 		*routerURL = os.Getenv("DDWRT_URL")
 	}
-	if os.Getenv("DDWRT_USERNAME") != "" {
+	if *username == "" {
 		*username = os.Getenv("DDWRT_USERNAME")
 	}
-	if os.Getenv("DDWRT_PASSWORD") != "" {
+	if *password == "" {
 		*password = os.Getenv("DDWRT_PASSWORD")
 	}
-	if os.Getenv("DDWRT_INTERFACES") != "" {
+	if *interfaces == "" {
 		*interfaces = os.Getenv("DDWRT_INTERFACES")
 	}
 
