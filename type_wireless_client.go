@@ -26,6 +26,10 @@ type WirelessClient struct {
 
 // Scan is used to parse the formatted string from the DD-WRT router
 func (wcl *WirelessClientList) Scan(value string) {
+	if strings.TrimSpace(value) == "" {
+		return
+	}
+
 	value = strings.ReplaceAll(value, "day,", "day")
 	value = strings.ReplaceAll(value, "days,", "day")
 	values := strings.Split(value, ",")

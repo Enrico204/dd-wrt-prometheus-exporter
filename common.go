@@ -26,6 +26,11 @@ type TXPowerType int
 
 // Scan is used to parse the formatted string from the DD-WRT router
 func (t *TXPowerType) Scan(v string) {
+	if v == "Radio is Off" {
+		*t = 0
+		return
+	}
+
 	intval, err := strconv.Atoi(strings.ReplaceAll(v, " mW", ""))
 	if err != nil {
 		log.Printf("Error converting TX power: %#v", err)
