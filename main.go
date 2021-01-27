@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -15,10 +16,29 @@ import (
 func main() {
 	_ = godotenv.Load()
 
-	var routerURL = flag.String("url", os.Getenv("DDWRT_URL"), "DD-WRT router URL (make sure to add the final slash)")
-	var username = flag.String("username", os.Getenv("DDWRT_USERNAME"), "Router user name")
-	var password = flag.String("password", os.Getenv("DDWRT_PASSWORD"), "Router password")
-	var interfaces = flag.String("interfaces", os.Getenv("DDWRT_INTERFACES"), "Comma separated list of interface names for bandwidth scraping (eg. br0,vlan0,eth1)")
+	var listenSocket = flag.String("listen", ":2112", "Listen socket for exporter")
+	var routerURL = flag.String("url", "", "DD-WRT router URL (make sure to add the final slash)")
+	var username = flag.String("username", "", "Router user name")
+	var password = flag.String("password", "", "Router password")
+	var interfaces = flag.String("interfaces", "eth0,eth1,vlan0,br0", "Comma separated list of interface names for bandwidth scraping (eg. br0,vlan0,eth1)")
+
+	flag.Parse()
+
+	if os.Getenv("DDWRT_LISTEN") != "" {
+		*listenSocket = os.Getenv("DDWRT_LISTEN")
+	}
+	if os.Getenv("DDWRT_URL") != "" {
+		*routerURL = os.Getenv("DDWRT_URL")
+	}
+	if os.Getenv("DDWRT_USERNAME") != "" {
+		*username = os.Getenv("DDWRT_USERNAME")
+	}
+	if os.Getenv("DDWRT_PASSWORD") != "" {
+		*password = os.Getenv("DDWRT_PASSWORD")
+	}
+	if os.Getenv("DDWRT_INTERFACES") != "" {
+		*interfaces = os.Getenv("DDWRT_INTERFACES")
+	}
 
 	if *routerURL == "" {
 		fmt.Println("Please specify the router URL")
@@ -32,6 +52,10 @@ func main() {
 
 	newHandler := promhttp.HandlerFor(registry, promhttp.HandlerOpts{})
 
+	log.Println("Starting exporter at", *listenSocket)
 	http.Handle("/metrics", promhttp.InstrumentMetricHandler(registry, newHandler))
-	http.ListenAndServe(":2112", nil)
+	err := http.ListenAndServe(*listenSocket, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
